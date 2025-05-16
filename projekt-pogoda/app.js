@@ -1,3 +1,4 @@
+// Import wymaganych bibliotek
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
@@ -6,8 +7,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const AUTHOR = "Nikodem Pałka";
 
+// Pobranie klucza API
 const API_KEY = process.env.WEATHER_API_KEY || "a9eb608e174e4dceb1b94922251605";
 
+// Lista predefiniowanych krajów i miast
 const cities = {
     "Polska": ["Warszawa", "Krakow", "Gdansk"],
     "Niemcy": ["Berlin", "Munich", "Hamburg"],
@@ -17,6 +20,7 @@ const cities = {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+// Logowanie podstawowych informacji przy starcie serwera
 app.listen(PORT, () => {
     const now = new Date().toISOString();
     console.log(`Data uruchomienia: ${now}`);
@@ -25,6 +29,7 @@ app.listen(PORT, () => {
     console.log("Aplikacja dostępna na http://localhost:" + PORT);
 });
 
+// Funkcja renderująca formularz i wynik pogody
 function renderForm(selectedCountry, selectedCity, weatherInfo) {
     return `
         <html>
@@ -62,6 +67,7 @@ function renderForm(selectedCountry, selectedCity, weatherInfo) {
     `;
 }
 
+// Funkcja pobierająca pogodę z WeatherAPI
 async function getWeather(city) {
     try {
         const url = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&lang=pl`;
@@ -74,10 +80,12 @@ async function getWeather(city) {
     }
 }
 
+// Trasa GET - wyświetla pusty formularz
 app.get('/', (req, res) => {
     res.send(renderForm(null, null, null));
 });
 
+// Trasa POST - obsługuje wybór kraju/miasta oraz pobranie pogody
 app.post('/', async (req, res) => {
     const selectedCountry = req.body.country;
     const selectedCity = req.body.city;
