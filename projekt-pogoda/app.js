@@ -62,7 +62,6 @@ function renderForm(selectedCountry, selectedCity, weatherInfo) {
     `;
 }
 
-// Funkcja z WeatherAPI
 async function getWeather(city) {
     try {
         const url = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&lang=pl`;
@@ -75,12 +74,10 @@ async function getWeather(city) {
     }
 }
 
-// GET - formularz startowy
 app.get('/', (req, res) => {
     res.send(renderForm(null, null, null));
 });
 
-// POST - obsługa wyborów i pogody
 app.post('/', async (req, res) => {
     const selectedCountry = req.body.country;
     const selectedCity = req.body.city;
