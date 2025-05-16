@@ -39,3 +39,9 @@ docker images pogoda-app
 
 ### Sprawdzanie healthcheck
 docker ps
+
+### Screeny potwierdzające działanie
+![image](https://github.com/user-attachments/assets/b496ccdc-43f3-4a1a-a1fb-38b7b44e8b8d)
+
+![image](https://github.com/user-attachments/assets/5384966c-1859-46ff-8197-cdea8fd45e51)
+
