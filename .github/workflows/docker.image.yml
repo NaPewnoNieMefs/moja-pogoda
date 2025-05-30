@@ -2,11 +2,9 @@ name: Build & Push Docker Image (multiarch, CVE, cache)
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 env:
   IMAGE_NAME: ghcr.io/NaPewnoNieMefs/pogoda-app
@@ -44,40 +42,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Restore cache from DockerHub
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          load: false
-          push: false
-          cache-from: type=registry,ref=${{ env.CACHE_REPO }}
-          cache-to: type=registry,ref=${{ env.CACHE_REPO }},mode=max
-          platforms: linux/amd64,linux/arm64
-          outputs: type=docker,dest=/tmp/image.tar
-
       - name: Build and push image (multiarch, cache)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ env.IMAGE_NAME }}:latest
-          cache-from: type=registry,ref=${{ env.CACHE_REPO }}
-          cache-to: type=registry,ref=${{ env.CACHE_REPO }},mode=max
-
-      - name: Export image to tar (for scanning)
-        run: |
-          docker buildx imagetools create ${{ env.IMAGE_NAME }}:latest
-          docker save ${{ env.IMAGE_NAME }}:latest -o image.tar
-
-      - name: Scan image with Trivy (CVE check)
-        uses: aquasecurity/trivy-action@master
-        with:
-          input: image.tar
-          exit-code: 1
-          severity: CRITICAL,HIGH
-
-      - name: Push image to GitHub Container Registry (if scan passed)
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -86,3 +51,10 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}:latest
           cache-from: type=registry,ref=${{ env.CACHE_REPO }}
           cache-to: type=registry,ref=${{ env.CACHE_REPO }},mode=max
+
+      - name: Scan image with Trivy (CVE check)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:latest
+          exit-code: 1
+          severity: CRITICAL,HIGH
