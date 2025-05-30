@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  IMAGE_NAME: ghcr.io/NaPewnoNieMefs/pogoda-app
+  IMAGE_NAME: ghcr.io/napewnoniemefs/pogoda-app
   CACHE_REPO: nikodemxppp/pogoda-app-cache
 
 jobs:
