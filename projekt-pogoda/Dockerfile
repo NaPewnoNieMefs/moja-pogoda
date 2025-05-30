@@ -1,13 +1,12 @@
 # Używamy oficjalnego obrazu Node.js
-FROM node:20-slim
+FROM node:20-alpine3.20 AS runtime
 
 # Ustawiamy katalog roboczy
 WORKDIR /app
 
 # Kopiujemy zależności
-COPY package.json ./
-# Instalujemy zależności i curl (do healthchecka)
-RUN npm install --production && apt-get update && apt-get install -y curl
+COPY package*.json ./
+RUN apk add --no-cache curl && npm install --omit=dev --no-audit --no-fund
 
 # Kopiujemy pliki aplikacji
 COPY app.js ./
